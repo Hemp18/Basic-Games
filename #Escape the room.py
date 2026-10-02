@@ -1,9 +1,19 @@
- #Escape the room
 import time
+import random
 
 passcode = "1581"
 door_locked = True
 player_has_passcode = False
+
+#Enemy Alien
+
+alien_aggression = 0.6
+alien_room = None
+
+#Hide mechanic
+
+hide_success = 0.5
+hiding = False
 
 #Dictionary for rooms.
 rooms = {
@@ -125,28 +135,58 @@ print("Room 3:" \
 
 #-------------------------------------------------------------------------------------
 
+level_rooms = rooms["level 1"]
 search = True
 while search == True:
     room = input("What room would you like to search? ").lower()
 
-    if room in rooms:
+    if room in level_rooms:
+
+        if alien_room is None:
+            if random.random() < alien_aggression:
+                other_rooms = []
+                for r in level_rooms:
+                    if r != room:
+                        other_rooms.append(r)
+                alien_room = random.choice(other_rooms)
+                print("Something scrapes in the distance... it's close.")
 
         item = input("What item would you like to read? ").lower()
 
-        if item in rooms[room]:
-            print(rooms[room][item])
+        if item in level_rooms[room]:
+            print(level_rooms[room][item])
         else:
             print("That item isn't in this room.")
 
-        choice = input("Would you like to search again, enter the passcode or exit? ").lower()
+        choice = input("Would you like to search again, enter the passcode, hide or exit? ").lower()
+
+        if search and alien_room is not None:
+    
+            if random.random() < alien_aggression:
+                alien_room = random.choice(list(level_rooms))
+                print("You hear something moving...")
+
+    
+        if alien_room == room:
+            if hiding and random.random() < hide_success:
+                print("The alien stalks past without noticing you...")
+                alien_room = None
+                hiding = False
+            else:
+                print("The alien finds you. Game over.")
+                search = False
 
         if choice == "no" or choice == "exit":
             search = False
+        elif choice == "hide":
+            hiding = True
+            print("You get into cover and hold your breath...")
+        
         elif choice == "yes":
             print("You continue searching...")
         elif choice == "passcode":
             attempt = input("Enter passcode: ")
-
+        
             if attempt == passcode:
                 print("Correct, unlocking door...")
                 search = False
