@@ -1,0 +1,1 @@
+Currently working on an Escape the Room game with a functioning enemy. The most recent update added the enemy, though it will be subject to changes once level progression is added in. You can see the progress of the game in its main file and branches.
